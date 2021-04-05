@@ -1,0 +1,4 @@
+#Mon Apr 05 18:31:04 WIB 2021
+base.0=/Users/raka/Project/Private/flutter/groups/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
