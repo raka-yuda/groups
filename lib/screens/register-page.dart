@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatelessWidget {
-  static const id = 'register-page';
+class RegisterPage extends StatefulWidget {
+  static const String id = 'register-page';
+
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +30,13 @@ class RegisterPage extends StatelessWidget {
                   fontWeight: FontWeight.bold),
             ),
             TextFormField(
+              controller: email,
               decoration: InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Enter your Username'),
             ),
             TextFormField(
+              controller: password,
               decoration: InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'Enter your Password'),

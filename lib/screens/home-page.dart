@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../datas/data.dart';
 
 class HomePage extends StatelessWidget {
-  static const id = 'home-page';
+  static const String id = 'home-page';
 
   @override
   Widget build(BuildContext context) {
