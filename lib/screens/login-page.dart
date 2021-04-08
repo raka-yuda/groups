@@ -123,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               Expanded(
                                 child: Text(
-                                  'Register with Email',
+                                  'Login with Email',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.black,
