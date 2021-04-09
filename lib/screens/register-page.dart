@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:groups/screens/login-page.dart';
 
 class RegisterPage extends StatefulWidget {
   static const String id = 'register-page';
@@ -10,8 +11,16 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
+  // final TextEditingController email = TextEditingController();
+  // final TextEditingController password = TextEditingController();
+
+  String email, password;
+  final _auth = FirebaseAuth.instance;
+
+  Future<UserCredential> createNewUser(String email, String password) async {
+    return await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 18,
                     ),
                     TextFormField(
-                      controller: email,
+                      // controller: email,
                       // The validator receives the text that the user has entered.
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -90,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 12,
                     ),
                     TextFormField(
-                      controller: password,
+                      // controller: password,
                       // The validator receives the text that the user has entered.
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -116,7 +125,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   horizontal: 46, vertical: 32),
                               textStyle: TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.bold)),
-                          onPressed: () {},
+                          onPressed: () async {
+                            try {
+                              final newUser = createNewUser(email, password);
+                              if (newUser != null) {
+                                Navigator.pushNamed(context, LoginPage.id);
+                              }
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
                           child: Row(
                             children: [
                               Icon(
