@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:groups/screens/chat-page.dart';
+import 'package:groups/screens/home-page.dart';
+import 'package:groups/screens/login-page.dart';
+import 'package:groups/screens/register-page.dart';
 import 'package:groups/screens/welcome-page.dart';
 
 void main() {
@@ -10,6 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        WelcomePage.id: (context) => WelcomePage(),
+        ChatPage.id: (context) => ChatPage(),
+        LoginPage.id: (context) => LoginPage(),
+        RegisterPage.id: (context) => WelcomePage(),
+        HomePage.id: (context) => HomePage(),
+      },
       theme: ThemeData(
         // This is the theme of your application.
         //
