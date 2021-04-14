@@ -14,8 +14,13 @@ class _LoginPageState extends State<LoginPage> {
   // final TextEditingController email = TextEditingController();
   // final TextEditingController password = TextEditingController();
 
-  // final _auth = FirebaseAuth.instance;
-  // String email, password;
+  String email, password;
+  final _auth = FirebaseAuth.instance;
+
+  Future<UserCredential> loginWithEmail(String email, String password) async {
+    return await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +140,16 @@ class _LoginPageState extends State<LoginPage> {
                                     horizontal: 46, vertical: 32),
                                 textStyle: TextStyle(
                                     fontSize: 30, fontWeight: FontWeight.bold)),
-                            onPressed: () {
-                              Navigator.pushNamed(context, ChatPage.id);
+                            onPressed: () async {
+                              try {
+                                final userLogin =
+                                    loginWithEmail(email, password);
+                                if (userLogin != null) {
+                                  Navigator.pushNamed(context, ChatPage.id);
+                                }
+                              } catch (e) {
+                                print(e);
+                              }
                             },
                             child: Row(
                               children: [

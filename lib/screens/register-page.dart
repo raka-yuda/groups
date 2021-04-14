@@ -88,6 +88,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       // controller: email,
                       // The validator receives the text that the user has entered.
+                      onChanged: (value) {
+                        email = value;
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some text';
@@ -101,6 +104,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       // controller: password,
                       // The validator receives the text that the user has entered.
+                      onChanged: (value) {
+                        password = value;
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter some text';
