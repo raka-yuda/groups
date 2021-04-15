@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:groups/screens/chat-page.dart';
 import 'package:groups/screens/home-page.dart';
@@ -5,7 +6,9 @@ import 'package:groups/screens/login-page.dart';
 import 'package:groups/screens/register-page.dart';
 import 'package:groups/screens/welcome-page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
         WelcomePage.id: (context) => WelcomePage(),
         ChatPage.id: (context) => ChatPage(),
         LoginPage.id: (context) => LoginPage(),
-        RegisterPage.id: (context) => WelcomePage(),
+        RegisterPage.id: (context) => RegisterPage(),
         HomePage.id: (context) => HomePage(),
       },
       theme: ThemeData(
