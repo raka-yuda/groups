@@ -11,15 +11,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // final TextEditingController email = TextEditingController();
-  // final TextEditingController password = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController password = TextEditingController();
 
-  String email, password;
+  // String email, password;
   final _auth = FirebaseAuth.instance;
+  bool _isInAsyncCall = true;
 
   Future<UserCredential> loginWithEmail(String email, String password) async {
     return await _auth.signInWithEmailAndPassword(
         email: email, password: password);
+  }
+
+  void setAsyncCall() {
+    if (_isInAsyncCall) {
+      _isInAsyncCall = false;
+    } else {
+      _isInAsyncCall = true;
+    }
   }
 
   @override
@@ -100,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 18,
                       ),
                       TextFormField(
-                        // controller: email,
+                        controller: email,
                         // The validator receives the text that the user has entered.
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -113,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 12,
                       ),
                       TextFormField(
-                        // controller: password,
+                        controller: password,
                         // The validator receives the text that the user has entered.
                         obscureText: true,
                         validator: (value) {
@@ -141,12 +150,18 @@ class _LoginPageState extends State<LoginPage> {
                                 textStyle: TextStyle(
                                     fontSize: 30, fontWeight: FontWeight.bold)),
                             onPressed: () async {
+                              setState(() {
+                                setAsyncCall();
+                              });
                               try {
                                 final userLogin =
-                                    loginWithEmail(email, password);
+                                    loginWithEmail(email.text, password.text);
                                 if (userLogin != null) {
                                   Navigator.pushNamed(context, ChatPage.id);
                                 }
+                                setState(() {
+                                  setAsyncCall();
+                                });
                               } catch (e) {
                                 print(e);
                               }

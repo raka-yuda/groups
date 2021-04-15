@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../datas/data.dart';
@@ -11,6 +12,11 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  CollectionReference _messagesCollection =
+      FirebaseFirestore.instance.collection('messages');
+
+  TextEditingController message = TextEditingController();
   User loggedInUser;
 
   @override
@@ -29,6 +35,11 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void getMessages() async {
+    final messages = await _messagesCollection.get();
+    // users.doc(documentId).get(),
   }
 
   @override
@@ -65,34 +76,57 @@ class _ChatPageState extends State<ChatPage> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  BubbleChat(
-                    isMe: true,
-                    message: 'Hiiii',
-                  ),
-                  BubbleChat(
-                    isMe: false,
-                    message: 'Hiiii',
-                  ),
-                  BubbleChat(
-                    isMe: true,
-                    message: 'Hiiii',
-                  ),
-                  BubbleChat(
-                    isMe: false,
-                    message: 'Hiiii',
-                  ),
-                  BubbleChat(
-                    isMe: true,
-                    message: 'Hiiii',
-                  ),
-                  BubbleChat(
-                    isMe: false,
-                    message: 'Hiiii',
-                  ),
-                  BubbleChat(
-                    isMe: true,
-                    message: 'Hiiii',
-                  ),
+                  StreamBuilder<QuerySnapshot>(
+                      stream: _messagesCollection.snapshots(),
+                      builder: (context, snapshot) {
+                        List<Text> messagesWidget = [];
+                        if (snapshot.hasData) {
+                          final messages = snapshot.data.docs;
+
+                          messages.forEach((message) {
+                            final messsageText = message['text'];
+                            final messsageSender = message['sender'];
+
+                            final messageWidget =
+                                Text('$messsageText from @$messsageSender');
+
+                            messagesWidget.add(messageWidget);
+                          });
+                        }
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: messagesWidget,
+                        );
+                      }),
+                  // BubbleChat(
+                  //   isMe: true,
+                  //   message: 'Hiiii',
+                  // ),
+                  // BubbleChat(
+                  //   isMe: false,
+                  //   message: 'Hiiii',
+                  // ),
+                  // BubbleChat(
+                  //   isMe: true,
+                  //   message: 'Hiiii',
+                  // ),
+                  // BubbleChat(
+                  //   isMe: false,
+                  //   message: 'Hiiii',
+                  // ),
+                  // BubbleChat(
+                  //   isMe: true,
+                  //   message: 'Hiiii',
+                  // ),
+                  // BubbleChat(
+                  //   isMe: false,
+                  //   message: 'Hiiii',
+                  // ),
+                  // BubbleChat(
+                  //   isMe: true,
+                  //   message: 'Hiiii',
+                  // ),
                 ],
               ),
             ),
@@ -108,6 +142,23 @@ class _ChatPageState extends State<ChatPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      TextFormField(
+                        controller: message,
+                        // The validator receives the text that the user has entered.
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            hintText: "Type a message"),
+                      ),
                       Text('Type a message',
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w100)),
@@ -116,9 +167,9 @@ class _ChatPageState extends State<ChatPage> {
                         icon: const Icon(Icons.send),
                         tooltip: 'Increase volume by 10',
                         onPressed: () {
-                          // setState(() {
-                          //   _volume += 10;
-                          // });
+                          _firestore
+                              .collection('messages')
+                              .add({'text': message, 'sender': loggedInUser});
                         },
                       ),
                     ],

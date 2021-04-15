@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groups/screens/login-page.dart';
+import 'package:groups/screens/register-page.dart';
 
 class WelcomePage extends StatelessWidget {
   static const String id = 'welcome-page';
@@ -111,7 +112,9 @@ class WelcomePage extends StatelessWidget {
                           EdgeInsets.symmetric(horizontal: 46, vertical: 32),
                       textStyle:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, RegisterPage.id);
+                  },
                   child: Row(
                     children: [
                       Icon(
