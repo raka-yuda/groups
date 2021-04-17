@@ -69,7 +69,7 @@ class ButtonSecondary extends StatelessWidget {
               style: TextStyle(
                   fontFamily: 'Nunito',
                   color: Color(0xFF31CD9D),
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w300),
             ),
           ),
@@ -86,14 +86,14 @@ class ButtonText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: onPressed,
       child: Text(
         text,
         textAlign: TextAlign.center,
         style: TextStyle(
             fontFamily: 'Nunito',
             color: Color(0xFF31CD9D),
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: FontWeight.w300),
       ),
     );
