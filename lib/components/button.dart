@@ -51,6 +51,8 @@ class ButtonSecondary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
             shape: const RoundedRectangleBorder(
@@ -58,20 +60,19 @@ class ButtonSecondary extends StatelessWidget {
             ),
             side: BorderSide(width: 1, color: Color(0xFF31CD9D)),
             primary: Colors.white,
-            padding: EdgeInsets.symmetric(horizontal: 46, vertical: 32),
+            padding: EdgeInsets.symmetric(vertical: 16),
             textStyle: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
         onPressed: onPressed,
-        child: Expanded(
-          child: Container(
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontFamily: 'Nunito',
-                  color: Color(0xFF31CD9D),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w300),
-            ),
+        child: Container(
+          width: size.width,
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: 'Nunito',
+                color: Color(0xFF31CD9D),
+                fontSize: 16,
+                fontWeight: FontWeight.w300),
           ),
         ));
   }
