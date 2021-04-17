@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:groups/components/button.dart';
 import 'package:groups/screens/login-page.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -17,7 +17,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // String email, password;
   final _auth = FirebaseAuth.instance;
-
   bool _isInAsyncCall = false;
 
   Future<UserCredential> createNewUser(String email, String password) async {
@@ -44,10 +43,10 @@ class _RegisterPageState extends State<RegisterPage> {
           Container(
               height: size.height,
               width: size.width,
-              color: Colors.white38,
+              color: Color(0xFFFAFAFA),
               child: Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 64, vertical: size.height * 0.20),
+                      horizontal: 48, vertical: size.height * 0.18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -55,20 +54,22 @@ class _RegisterPageState extends State<RegisterPage> {
                         'Groups',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 36,
-                            fontWeight: FontWeight.w600),
+                            fontFamily: 'Nunito',
+                            color: Color(0xFF31CD9D),
+                            fontSize: 48,
+                            fontWeight: FontWeight.w900),
                       ),
                       SizedBox(
                         height: 12,
                       ),
                       Text(
-                        'A flutter live chat application',
+                        'Register',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                            color: Colors.black38,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300),
+                          fontFamily: 'Nunito',
+                          color: Color(0xFF2F4858),
+                          fontSize: 32,
+                        ),
                       )
                     ],
                   ))),
@@ -81,31 +82,47 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12))),
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24))),
                 child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 36, vertical: 36),
+                    padding: EdgeInsets.only(
+                      top: 28,
+                      left: 28,
+                      right: 28,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Register',
+                          'Email',
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
+                            fontFamily: 'Nunito',
+                            color: Color(0xFF2F4858),
+                            fontSize: 16,
+                          ),
                         ),
                         SizedBox(
-                          height: 18,
+                          height: 8,
                         ),
                         TextFormField(
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                              borderSide: BorderSide(
+                                color: Color(0xFFC4C4C4),
+                                width: 1.0,
+                              ),
+                            ),
+                          ),
                           controller: email,
-                          // The validator receives the text that the user has entered.
-                          keyboardType: TextInputType.emailAddress,
-                          // onChanged: (value) {
-                          //   email = value;
-                          // },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter some text';
@@ -116,12 +133,38 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(
                           height: 12,
                         ),
+                        Text(
+                          'Password',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            color: Color(0xFF2F4858),
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
                         TextFormField(
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(40.0),
+                              borderSide: BorderSide(
+                                color: Color(0xFFC4C4C4),
+                                width: 1.0,
+                              ),
+                            ),
+                          ),
                           controller: password,
                           // The validator receives the text that the user has entered.
-                          // onChanged: (value) {
-                          //   password = value;
-                          // },
+                          obscureText: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter some text';
@@ -130,59 +173,47 @@ class _RegisterPageState extends State<RegisterPage> {
                           },
                         ),
                         SizedBox(
-                          height: 12,
+                          height: 16,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(40)),
-                                  ),
-                                  side:
-                                      BorderSide(width: 1, color: Colors.grey),
-                                  primary: Colors.white,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 46, vertical: 32),
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold)),
-                              onPressed: () async {
-                                setState(() {
-                                  setAsyncCall();
-                                });
-                                try {
-                                  final newUser =
-                                      createNewUser(email.text, password.text);
-                                  if (newUser != null) {
-                                    Navigator.pushNamed(context, LoginPage.id);
-                                  }
-                                  setState(() {
-                                    setAsyncCall();
-                                  });
-                                } catch (e) {
-                                  print(e);
-                                }
+                        ButtonPrimary(
+                          text: 'Register with email',
+                          onPressed: () async {
+                            setState(() {
+                              setAsyncCall();
+                            });
+                            try {
+                              final newUser =
+                                  createNewUser(email.text, password.text);
+                              if (newUser != null) {
+                                Navigator.pushNamed(context, LoginPage.id);
+                              }
+                              setState(() {
+                                setAsyncCall();
+                              });
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an account?',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                color: Color(0xFF2F4858),
+                                fontSize: 16,
+                              ),
+                            ),
+                            ButtonText(
+                              text: 'Login',
+                              onPressed: () {
+                                Navigator.pushNamed(context, LoginPage.id);
                               },
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.app_registration,
-                                    color: Colors.blueAccent,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'Register',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                  )
-                                ],
-                              )),
+                            )
+                          ],
                         ),
                       ],
                     ))),

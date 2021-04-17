@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:groups/components/button.dart';
 import 'package:groups/screens/chat-page.dart';
+import 'package:groups/screens/register-page.dart';
 
 class LoginPage extends StatefulWidget {
   static const String id = 'login-page';
@@ -36,27 +37,14 @@ class _LoginPageState extends State<LoginPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'login-screen',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
       body: Stack(children: [
         Container(
             height: size.height,
             width: size.width,
-            color: Colors.white38,
+            color: Color(0xFFFAFAFA),
             child: Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 64, vertical: size.height * 0.20),
+                    horizontal: 48, vertical: size.height * 0.18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -64,20 +52,22 @@ class _LoginPageState extends State<LoginPage> {
                       'Groups',
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 36,
-                          fontWeight: FontWeight.w600),
+                          fontFamily: 'Nunito',
+                          color: Color(0xFF31CD9D),
+                          fontSize: 48,
+                          fontWeight: FontWeight.w900),
                     ),
                     SizedBox(
                       height: 12,
                     ),
                     Text(
-                      'A flutter live chat application',
+                      'Login',
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w300),
+                        fontFamily: 'Nunito',
+                        color: Color(0xFF2F4858),
+                        fontSize: 32,
+                      ),
                     )
                   ],
                 ))),
@@ -90,27 +80,47 @@ class _LoginPageState extends State<LoginPage> {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12))),
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24))),
               child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 36, vertical: 36),
+                  padding: EdgeInsets.only(
+                    top: 28,
+                    left: 28,
+                    right: 28,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Login',
+                        'Email',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                          fontFamily: 'Nunito',
+                          color: Color(0xFF2F4858),
+                          fontSize: 16,
+                        ),
                       ),
                       SizedBox(
-                        height: 18,
+                        height: 8,
                       ),
                       TextFormField(
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40.0),
+                            borderSide: BorderSide(
+                              color: Color(0xFFC4C4C4),
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
                         controller: email,
-                        // The validator receives the text that the user has entered.
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter some text';
@@ -121,7 +131,35 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: 12,
                       ),
+                      Text(
+                        'Password',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          color: Color(0xFF2F4858),
+                          fontSize: 16,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
                       TextFormField(
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(40.0),
+                            borderSide: BorderSide(
+                              color: Color(0xFFC4C4C4),
+                              width: 1.0,
+                            ),
+                          ),
+                        ),
                         controller: password,
                         // The validator receives the text that the user has entered.
                         obscureText: true,
@@ -133,57 +171,47 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       SizedBox(
-                        height: 12,
+                        height: 16,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40)),
-                                ),
-                                side: BorderSide(width: 1, color: Colors.grey),
-                                primary: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 46, vertical: 32),
-                                textStyle: TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold)),
-                            onPressed: () async {
-                              setState(() {
-                                setAsyncCall();
-                              });
-                              try {
-                                final userLogin =
-                                    loginWithEmail(email.text, password.text);
-                                if (userLogin != null) {
-                                  Navigator.pushNamed(context, ChatPage.id);
-                                }
-                                setState(() {
-                                  setAsyncCall();
-                                });
-                              } catch (e) {
-                                print(e);
-                              }
+                      ButtonPrimary(
+                        text: 'Login with Email',
+                        onPressed: () async {
+                          setState(() {
+                            setAsyncCall();
+                          });
+                          try {
+                            final userLogin =
+                                loginWithEmail(email.text, password.text);
+                            if (userLogin != null) {
+                              Navigator.pushNamed(context, ChatPage.id);
+                            }
+                            setState(() {
+                              setAsyncCall();
+                            });
+                          } catch (e) {
+                            print(e);
+                          }
+                        },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Not registered yet?',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              color: Color(0xFF2F4858),
+                              fontSize: 16,
+                            ),
+                          ),
+                          ButtonText(
+                            text: 'Register',
+                            onPressed: () {
+                              Navigator.pushNamed(context, RegisterPage.id);
                             },
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.app_registration,
-                                  color: Colors.blueAccent,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'Login with Email',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w300),
-                                  ),
-                                )
-                              ],
-                            )),
+                          )
+                        ],
                       ),
                     ],
                   ))),
