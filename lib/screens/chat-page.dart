@@ -39,7 +39,6 @@ class _ChatPageState extends State<ChatPage> {
 
   void getMessages() async {
     final messages = await _messagesCollection.get();
-    // users.doc(documentId).get(),
   }
 
   @override
@@ -48,101 +47,74 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        backgroundColor: Color(0xFF31CD9D),
         title: Text(
-          'chat-screen',
-          style: TextStyle(color: Colors.white),
+          'Groups',
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            fontFamily: 'Nunito',
+            color: Colors.white,
+            fontSize: 16,
+          ),
         ),
         actions: [
           IconButton(
               icon: Icon(Icons.close),
+              color: Colors.white,
               onPressed: () {
                 _auth.signOut();
                 Navigator.pop(context);
               }),
         ],
       ),
-      body: Container(
-        height: size.height,
-        width: size.width,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  StreamBuilder<QuerySnapshot>(
-                      stream: _messagesCollection.snapshots(),
-                      builder: (context, snapshot) {
-                        List<Text> messagesWidget = [];
-                        if (snapshot.hasData) {
-                          final messages = snapshot.data.docs;
+      body: Stack(
+        children: [
+          Container(
+            height: size.height - 64,
+            width: size.width,
+            child: SingleChildScrollView(
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: _messagesCollection.snapshots(),
+                  builder: (context, snapshot) {
+                    List<Widget> messagesWidget = [];
+                    if (snapshot.hasData) {
+                      final messages = snapshot.data.docs;
 
-                          messages.forEach((message) {
-                            final messsageText = message['text'];
-                            final messsageSender = message['sender'];
+                      messages.forEach((message) {
+                        final messsageText = message['text'];
+                        final messsageSender = message['sender'];
 
-                            final messageWidget =
-                                Text('$messsageText from @$messsageSender');
+                        // final messageWidget =
+                        //     Text('$messsageText from @$messsageSender');
 
-                            messagesWidget.add(messageWidget);
-                          });
-                        }
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: messagesWidget,
-                        );
-                      }),
-                  // BubbleChat(
-                  //   isMe: true,
-                  //   message: 'Hiiii',
-                  // ),
-                  // BubbleChat(
-                  //   isMe: false,
-                  //   message: 'Hiiii',
-                  // ),
-                  // BubbleChat(
-                  //   isMe: true,
-                  //   message: 'Hiiii',
-                  // ),
-                  // BubbleChat(
-                  //   isMe: false,
-                  //   message: 'Hiiii',
-                  // ),
-                  // BubbleChat(
-                  //   isMe: true,
-                  //   message: 'Hiiii',
-                  // ),
-                  // BubbleChat(
-                  //   isMe: false,
-                  //   message: 'Hiiii',
-                  // ),
-                  // BubbleChat(
-                  //   isMe: true,
-                  //   message: 'Hiiii',
-                  // ),
-                ],
-              ),
+                        final messageWidget =
+                            BubbleChat(isMe: true, message: messsageText);
+
+                        messagesWidget.add(messageWidget);
+                      });
+                    }
+                    return Column(
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: messagesWidget,
+                    );
+                  }),
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: Container(
-                height: 64,
-                width: size.width,
-                color: Colors.grey,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextFormField(
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Container(
+              height: 64,
+              width: size.width,
+              color: Color(0xFF31CD9D),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
                         controller: message,
                         // The validator receives the text that the user has entered.
                         validator: (value) {
@@ -157,28 +129,40 @@ class _ChatPageState extends State<ChatPage> {
                             enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
+                            hintStyle: TextStyle(
+                              fontFamily: 'Nunito',
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                             hintText: "Type a message"),
                       ),
-                      Text('Type a message',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w100)),
-                      // Icon(Icons.send),
-                      IconButton(
-                        icon: const Icon(Icons.send),
-                        tooltip: 'Increase volume by 10',
-                        onPressed: () {
-                          _firestore
-                              .collection('messages')
-                              .add({'text': message, 'sender': loggedInUser});
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      color: Colors.white,
+                      tooltip: 'Increase volume by 10',
+                      onPressed: () {
+                        // print({
+                        //   'text': message.text,
+                        //   'sender': loggedInUser.email
+                        // });
+                        _firestore
+                            .collection('messages')
+                            .add({
+                              'text': message.text,
+                              'sender': loggedInUser.email
+                            })
+                            .then((value) => print("Message Added"))
+                            .catchError(
+                                (error) => print("Failed to add : $error"));
+                      },
+                    ),
+                  ],
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -197,20 +181,26 @@ class BubbleChat extends StatelessWidget {
           (isMe) ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Container(
-            height: 100,
-            width: 160,
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-            decoration: BoxDecoration(
-                color: (isMe) ? Colors.blueAccent : Colors.lightGreen,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
-                    bottomLeft:
-                        (isMe) ? Radius.circular(4) : Radius.circular(0),
-                    bottomRight:
-                        (isMe) ? Radius.circular(0) : Radius.circular(4))),
-            child: Text('test', style: TextStyle(color: Colors.black))),
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+              color: (isMe) ? Color(0xFF31CD9D) : Color(0xFF00BAAF),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                  bottomLeft: (isMe) ? Radius.circular(12) : Radius.circular(0),
+                  bottomRight:
+                      (isMe) ? Radius.circular(0) : Radius.circular(4))),
+          child: Text(
+            message,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ),
       ],
     );
   }
