@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:groups/components/button.dart';
 
 class DialogCustom extends StatelessWidget {
+  final Function yes;
+  final Function no;
+
+  DialogCustom({this.yes, this.no});
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -48,9 +53,7 @@ class DialogCustom extends StatelessWidget {
                   width: size.width * 0.25,
                   child: ButtonSecondary(
                     text: 'No',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: no,
                   ),
                 ),
                 SizedBox(
@@ -60,9 +63,7 @@ class DialogCustom extends StatelessWidget {
                   width: size.width * 0.25,
                   child: ButtonPrimary(
                     text: 'Yes',
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: yes,
                   ),
                 )
               ],

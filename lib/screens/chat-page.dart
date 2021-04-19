@@ -1,6 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:groups/components/dialog.dart';
+import 'package:groups/screens/login-page.dart';
+import 'package:groups/services/authentication_service.dart';
+
+import 'package:provider/provider.dart';
 import '../datas/data.dart';
 
 class ChatPage extends StatefulWidget {
@@ -26,7 +32,7 @@ class _ChatPageState extends State<ChatPage> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async {
+  void getCurrentUser() {
     try {
       final user = _auth.currentUser;
       if (user != null) {
@@ -41,6 +47,16 @@ class _ChatPageState extends State<ChatPage> {
     final messages = await _messagesCollection.get();
   }
 
+  doLogout() {
+    Navigator.popUntil(context, ModalRoute.withName(LoginPage.id));
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    context.read<AuthenticationService>().signOut();
+  }
+
+  doCancelLogout() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -48,13 +64,15 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF31CD9D),
-        title: Text(
-          'Groups',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontFamily: 'Nunito',
-            color: Colors.white,
-            fontSize: 16,
+        leading: Container(),
+        title: Center(
+          child: Text(
+            'Groups',
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: Colors.white,
+              fontSize: 16,
+            ),
           ),
         ),
         actions: [
@@ -62,40 +80,46 @@ class _ChatPageState extends State<ChatPage> {
               icon: Icon(Icons.close),
               color: Colors.white,
               onPressed: () {
-                _auth.signOut();
-                Navigator.pop(context);
+                showDialog(
+                    context: context,
+                    builder: (context) => DialogCustom(
+                          yes: doLogout,
+                          no: doCancelLogout,
+                        ));
               }),
         ],
       ),
       body: Stack(
         children: [
           Container(
-            height: size.height - 64,
+            height: size.height,
             width: size.width,
+            padding: EdgeInsets.only(bottom: 64),
             child: SingleChildScrollView(
+              reverse: true,
               child: StreamBuilder<QuerySnapshot>(
                   stream: _messagesCollection.snapshots(),
                   builder: (context, snapshot) {
                     List<Widget> messagesWidget = [];
                     if (snapshot.hasData) {
-                      final messages = snapshot.data.docs;
+                      final messages = snapshot.data.docs.reversed;
 
                       messages.forEach((message) {
-                        final messsageText = message['text'];
-                        final messsageSender = message['sender'];
+                        final messageText = message['text'];
+                        final messageSender = message['sender'];
 
-                        // final messageWidget =
-                        //     Text('$messsageText from @$messsageSender');
+                        final currentUser = loggedInUser.email;
 
-                        final messageWidget =
-                            BubbleChat(isMe: true, message: messsageText);
+                        final messageWidget = BubbleChat(
+                          isMe: currentUser == messageSender,
+                          sender: messageSender,
+                          message: messageText,
+                        );
 
                         messagesWidget.add(messageWidget);
                       });
                     }
                     return Column(
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: messagesWidget,
                     );
                   }),
@@ -115,6 +139,11 @@ class _ChatPageState extends State<ChatPage> {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                         controller: message,
                         // The validator receives the text that the user has entered.
                         validator: (value) {
@@ -140,7 +169,7 @@ class _ChatPageState extends State<ChatPage> {
                     IconButton(
                       icon: const Icon(Icons.send),
                       color: Colors.white,
-                      tooltip: 'Increase volume by 10',
+                      focusColor: Colors.black12,
                       onPressed: () {
                         // print({
                         //   'text': message.text,
@@ -170,9 +199,10 @@ class _ChatPageState extends State<ChatPage> {
 
 class BubbleChat extends StatelessWidget {
   final bool isMe;
+  final String sender;
   final String message;
 
-  BubbleChat({this.isMe, this.message});
+  BubbleChat({this.isMe, this.sender, this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -180,26 +210,41 @@ class BubbleChat extends StatelessWidget {
       mainAxisAlignment:
           (isMe) ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          decoration: BoxDecoration(
-              color: (isMe) ? Color(0xFF31CD9D) : Color(0xFF00BAAF),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                  bottomLeft: (isMe) ? Radius.circular(12) : Radius.circular(0),
-                  bottomRight:
-                      (isMe) ? Radius.circular(0) : Radius.circular(4))),
-          child: Text(
-            message,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontFamily: 'Nunito',
-              color: Colors.white,
-              fontSize: 16,
+        Column(
+          crossAxisAlignment:
+              (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              sender,
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                color: Color(0xFF2F4858),
+                fontSize: 12,
+              ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                  color: (isMe) ? Color(0xFF31CD9D) : Color(0xFF00BAAF),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                      bottomLeft:
+                          (isMe) ? Radius.circular(12) : Radius.circular(0),
+                      bottomRight:
+                          (isMe) ? Radius.circular(0) : Radius.circular(4))),
+              child: Text(
+                message,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontFamily: 'Nunito',
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
