@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:groups/components/button.dart';
 import 'package:groups/screens/login-page.dart';
+import 'package:groups/services/authentication_service.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   static const String id = 'register-page';
@@ -109,9 +111,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
+                              borderRadius: BorderRadius.circular(40.0),
                               borderSide: BorderSide(
-                                color: Colors.blue,
+                                color: Color(0xFFC4C4C4),
+                                width: 1.0,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
@@ -149,9 +152,10 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             fillColor: Colors.white,
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
+                              borderRadius: BorderRadius.circular(40.0),
                               borderSide: BorderSide(
-                                color: Colors.blue,
+                                color: Color(0xFFC4C4C4),
+                                width: 1.0,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
@@ -181,17 +185,16 @@ class _RegisterPageState extends State<RegisterPage> {
                             setState(() {
                               setAsyncCall();
                             });
-                            try {
-                              final newUser =
-                                  createNewUser(email.text, password.text);
-                              if (newUser != null) {
-                                Navigator.pushNamed(context, LoginPage.id);
-                              }
-                              setState(() {
-                                setAsyncCall();
-                              });
-                            } catch (e) {
-                              print(e);
+                            final res = await context
+                                .read<AuthenticationService>()
+                                .createUser(email.text, password.text);
+                            setState(() {
+                              setAsyncCall();
+                            });
+                            if (res != null) {
+                              final snackBar = SnackBar(content: Text(res));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             }
                           },
                         ),
