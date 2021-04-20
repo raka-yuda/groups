@@ -48,8 +48,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   doLogout() {
-    Navigator.popUntil(context, ModalRoute.withName(LoginPage.id));
     SystemChannels.textInput.invokeMethod('TextInput.hide');
+    Navigator.popUntil(context, ModalRoute.withName(LoginPage.id));
     context.read<AuthenticationService>().signOut();
   }
 
