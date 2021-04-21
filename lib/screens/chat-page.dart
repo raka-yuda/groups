@@ -233,7 +233,7 @@ class BubbleChat extends StatelessWidget {
                       bottomLeft:
                           (isMe) ? Radius.circular(12) : Radius.circular(0),
                       bottomRight:
-                          (isMe) ? Radius.circular(0) : Radius.circular(4))),
+                          (isMe) ? Radius.circular(0) : Radius.circular(12))),
               child: Text(
                 message,
                 textAlign: TextAlign.start,

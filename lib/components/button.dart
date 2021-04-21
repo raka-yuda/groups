@@ -12,6 +12,7 @@ class ButtonPrimary extends StatelessWidget {
 
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
+            shadowColor: Color(0xFF31CD9D).withOpacity(0.2),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(40)),
             ),
