@@ -95,35 +95,33 @@ class _ChatPageState extends State<ChatPage> {
             height: size.height,
             width: size.width,
             padding: EdgeInsets.only(bottom: 64),
-            child: SingleChildScrollView(
-              reverse: true,
-              child: StreamBuilder<QuerySnapshot>(
-                  stream: _messagesCollection.snapshots(),
-                  builder: (context, snapshot) {
-                    List<Widget> messagesWidget = [];
-                    if (snapshot.hasData) {
-                      final messages = snapshot.data.docs.reversed;
+            child: StreamBuilder<QuerySnapshot>(
+                stream: _messagesCollection.snapshots(),
+                builder: (context, snapshot) {
+                  List<Widget> messagesWidget = [];
+                  if (snapshot.hasData) {
+                    final messages = snapshot.data.docs.reversed;
 
-                      messages.forEach((message) {
-                        final messageText = message['text'];
-                        final messageSender = message['sender'];
+                    messages.forEach((message) {
+                      final messageText = message['text'];
+                      final messageSender = message['sender'];
 
-                        final currentUser = loggedInUser.email;
+                      final currentUser = loggedInUser.email;
 
-                        final messageWidget = BubbleChat(
-                          isMe: currentUser == messageSender,
-                          sender: messageSender,
-                          message: messageText,
-                        );
+                      final messageWidget = BubbleChat(
+                        isMe: currentUser == messageSender,
+                        sender: messageSender,
+                        message: messageText,
+                      );
 
-                        messagesWidget.add(messageWidget);
-                      });
-                    }
-                    return Column(
-                      children: messagesWidget,
-                    );
-                  }),
-            ),
+                      messagesWidget.add(messageWidget);
+                    });
+                  }
+                  return ListView(
+                    reverse: true,
+                    children: messagesWidget,
+                  );
+                }),
           ),
           Positioned(
             bottom: 0,
@@ -206,45 +204,44 @@ class BubbleChat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          (isMe) ? MainAxisAlignment.end : MainAxisAlignment.start,
+    return Column(
+      crossAxisAlignment:
+          (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment:
-              (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Text(
-              sender,
-              style: TextStyle(
-                fontFamily: 'Nunito',
-                color: Color(0xFF2F4858),
-                fontSize: 12,
-              ),
+        Padding(
+          padding:
+              (isMe) ? EdgeInsets.only(right: 10) : EdgeInsets.only(left: 10),
+          child: Text(
+            sender,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: Color(0xFF2F4858),
+              fontSize: 12,
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                  color: (isMe) ? Color(0xFF31CD9D) : Color(0xFF00BAAF),
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12),
-                      bottomLeft:
-                          (isMe) ? Radius.circular(12) : Radius.circular(0),
-                      bottomRight:
-                          (isMe) ? Radius.circular(0) : Radius.circular(12))),
-              child: Text(
-                message,
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
+          ),
+        ),
+        Container(
+          margin: (isMe)
+              ? EdgeInsets.only(left: 64, right: 10, top: 6, bottom: 6)
+              : EdgeInsets.only(left: 10, right: 64, top: 6, bottom: 6),
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+              color: (isMe) ? Color(0xFF31CD9D) : Color(0xFF00BAAF),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                  bottomLeft: (isMe) ? Radius.circular(12) : Radius.circular(0),
+                  bottomRight:
+                      (isMe) ? Radius.circular(0) : Radius.circular(12))),
+          child: Text(
+            message,
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontFamily: 'Nunito',
+              color: Colors.white,
+              fontSize: 16,
             ),
-          ],
+          ),
         ),
       ],
     );
