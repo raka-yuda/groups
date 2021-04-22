@@ -96,11 +96,13 @@ class _ChatPageState extends State<ChatPage> {
             width: size.width,
             padding: EdgeInsets.only(bottom: 64),
             child: StreamBuilder<QuerySnapshot>(
-                stream: _messagesCollection.snapshots(),
+                stream: _messagesCollection
+                    .orderBy("created_at", descending: true)
+                    .snapshots(),
                 builder: (context, snapshot) {
                   List<Widget> messagesWidget = [];
                   if (snapshot.hasData) {
-                    final messages = snapshot.data.docs.reversed;
+                    final messages = snapshot.data.docs;
 
                     messages.forEach((message) {
                       final messageText = message['text'];
@@ -177,7 +179,8 @@ class _ChatPageState extends State<ChatPage> {
                             .collection('messages')
                             .add({
                               'text': message.text,
-                              'sender': loggedInUser.email
+                              'sender': loggedInUser.email,
+                              'created_at': FieldValue.serverTimestamp()
                             })
                             .then((value) => print("Message Added"))
                             .catchError(
