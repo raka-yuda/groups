@@ -1,1 +1,0 @@
-final List<String> dataGroup = <String>['A', 'B', 'C'];
