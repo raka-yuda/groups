@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:groups/components/button.dart';
 import 'package:groups/screens/login-page.dart';
-import 'package:groups/services/authentication_service.dart';
+import 'package:groups/services/authentication-service.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
@@ -17,14 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
 
-  // String email, password;
-  final _auth = FirebaseAuth.instance;
   bool _isInAsyncCall = false;
-
-  Future<UserCredential> createNewUser(String email, String password) async {
-    return await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
-  }
 
   void setAsyncCall() {
     if (_isInAsyncCall) {

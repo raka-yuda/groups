@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:groups/components/dialog.dart';
 import 'package:groups/screens/login-page.dart';
-import 'package:groups/services/authentication_service.dart';
+import 'package:groups/services/authentication-service.dart';
 
 import 'package:provider/provider.dart';
-import '../datas/data.dart';
 
 class ChatPage extends StatefulWidget {
   static const String id = 'chat-page';
@@ -43,12 +41,8 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  void getMessages() async {
-    final messages = await _messagesCollection.get();
-  }
-
   doLogout() {
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    // SystemChannels.textInput.invokeMethod('TextInput.hide');
     Navigator.popUntil(context, ModalRoute.withName(LoginPage.id));
     context.read<AuthenticationService>().signOut();
   }
@@ -171,20 +165,15 @@ class _ChatPageState extends State<ChatPage> {
                       color: Colors.white,
                       focusColor: Colors.black12,
                       onPressed: () {
-                        // print({
-                        //   'text': message.text,
-                        //   'sender': loggedInUser.email
-                        // });
-                        _firestore
-                            .collection('messages')
-                            .add({
-                              'text': message.text,
-                              'sender': loggedInUser.email,
-                              'created_at': FieldValue.serverTimestamp()
-                            })
-                            .then((value) => print("Message Added"))
-                            .catchError(
-                                (error) => print("Failed to add : $error"));
+                        _firestore.collection('messages').add({
+                          'text': message.text,
+                          'sender': loggedInUser.email,
+                          'created_at': FieldValue.serverTimestamp()
+                        }).then((value) {
+                          print("Message Added");
+                          message.clear();
+                        }).catchError(
+                            (error) => print("Failed to add : $error"));
                       },
                     ),
                   ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../datas/data.dart';
 
 class HomePage extends StatelessWidget {
   static const String id = 'home-page';

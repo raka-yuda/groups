@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:groups/components/button.dart';
 import 'package:groups/screens/chat-page.dart';
 import 'package:groups/screens/register-page.dart';
-import 'package:groups/services/authentication_service.dart';
+import 'package:groups/services/authentication-service.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
 
@@ -192,9 +191,14 @@ class _LoginPageState extends State<LoginPage> {
                               setAsyncCall();
                             });
                             if (res == 'success') {
+                              email.clear();
+                              password.clear();
                               Navigator.pushNamed(context, ChatPage.id);
                             } else {
-                              final snackBar = SnackBar(content: Text(res));
+                              final snackBar = SnackBar(
+                                content: Text(res),
+                                backgroundColor: Color(0xFF2F4858),
+                              );
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }
