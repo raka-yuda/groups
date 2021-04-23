@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 
 enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
 
@@ -23,27 +22,20 @@ class AuthenticationService {
       switch (e.message) {
         case 'There is no user record corresponding to this identifier. The user may have been deleted.':
           errorType = authProblems.UserNotFound;
-          return errorType.toString();
+          return 'Have you registered yet?';
           break;
         case 'The password is invalid or the user does not have a password.':
           errorType = authProblems.PasswordNotValid;
-          return errorType.toString();
+          return 'Please input the right password!';
           break;
         case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
           errorType = authProblems.NetworkError;
-          return errorType.toString();
+          return 'Please check your Internet Connection!';
           break;
         default:
           print('Case ${e.message} is not yet implemented');
           return e.code.toString();
       }
-
-      // if (e.code == 'user-not-found') {
-      //   print('No user found for that email.');
-      // } else if (e.code == 'wrong-password') {
-      //   print('Wrong password provided for that user.');
-      // }
-      // return e.code;
     }
   }
 
@@ -64,7 +56,7 @@ class AuthenticationService {
           .user;
       return 'success';
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      return e.code;
     }
   }
 }

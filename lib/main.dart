@@ -6,7 +6,7 @@ import 'package:groups/screens/home-page.dart';
 import 'package:groups/screens/login-page.dart';
 import 'package:groups/screens/register-page.dart';
 import 'package:groups/screens/welcome-page.dart';
-import 'package:groups/services/authentication_service.dart';
+import 'package:groups/services/authentication-service.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
