@@ -25,7 +25,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
   }
