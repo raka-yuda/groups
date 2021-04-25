@@ -1,6 +1,6 @@
 # Groups
 
-Groups is a flutter based live chat application
+> Groups is a flutter based live chat application
 
 ## Table of contents
 * [Design](#design)
@@ -8,6 +8,7 @@ Groups is a flutter based live chat application
 * [Packages](#packages)
 
 ## Design
+![Project Design](https://mir-s3-cdn-cf.behance.net/project_modules/1400/d9c048118230957.60855b59d24b4.png)
 
 ## Installation
 
